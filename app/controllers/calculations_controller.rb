@@ -11,13 +11,19 @@ class CalculationsController < ApplicationController
     # ================================================================================
 
 
-    @word_count = "Replace this string with your answer."
+    text_split_into_array = @text.downcase.gsub(",","").gsub(".","").split
 
-    @character_count_with_spaces = "Replace this string with your answer."
+    text_without_spaces = @text.gsub(" ", "")
 
-    @character_count_without_spaces = "Replace this string with your answer."
+    special_word_downcase = @special_word.downcase
 
-    @occurrences = "Replace this string with your answer."
+    @word_count = text_split_into_array.count
+
+    @character_count_with_spaces = @text.size
+
+    @character_count_without_spaces = text_without_spaces.size
+
+    @occurrences = text_split_into_array.count (special_word_downcase)
 
     # ================================================================================
     # Your code goes above.
@@ -38,7 +44,14 @@ class CalculationsController < ApplicationController
     # The principal value the user input is in the decimal @principal.
     # ================================================================================
 
-    @monthly_payment = "Replace this string with your answer."
+
+    monthly_r = @apr / 12.0 / 100.0
+    terms = @years * 12
+    numerator = monthly_r * (@principal)
+    denominator = 1 - ((1+monthly_r)**-terms)
+
+
+    @monthly_payment = numerator / denominator
 
     # ================================================================================
     # Your code goes above.
@@ -60,12 +73,12 @@ class CalculationsController < ApplicationController
     #   number of seconds as a result.
     # ================================================================================
 
-    @seconds = "Replace this string with your answer."
-    @minutes = "Replace this string with your answer."
-    @hours = "Replace this string with your answer."
-    @days = "Replace this string with your answer."
-    @weeks = "Replace this string with your answer."
-    @years = "Replace this string with your answer."
+    @seconds = @ending - @starting
+    @minutes = (@ending - @starting) / 60
+    @hours = (@ending - @starting) / 60 / 60
+    @days = (@ending - @starting) / 60 / 60 / 24
+    @weeks = (@ending - @starting) / 60 / 60 / 24 / 7
+    @years = (@ending - @starting) / 60 / 60 / 24 / 365
 
     # ================================================================================
     # Your code goes above.
@@ -81,28 +94,50 @@ class CalculationsController < ApplicationController
     # Your code goes below.
     # The numbers the user input are in the array @numbers.
     # ================================================================================
+    #Find median
+    if @numbers.count.odd?
+      index = (@numbers.count / 2).floor
+      med = @numbers.sort[index]
+    # Even numbers
+    else
+      index_1 = (@numbers.count / 2) - 1
+      index_2 = (@numbers.count / 2)
+      med = (@numbers.sort[index_1] + @numbers.sort[index_2]) / 2.0
+    end
 
-    @sorted_numbers = "Replace this string with your answer."
+    #Find mean
+    ave = @numbers.sum / 1.0 / @numbers.count
 
-    @count = "Replace this string with your answer."
+    #Find variance
+    var_math = @numbers.map { |num| (num - ave)**2 / (@numbers.count)}
 
-    @minimum = "Replace this string with your answer."
+    #Find mode
+    arr = @numbers.sort
+    freq = arr.inject(Hash.new(0)) { |h,v| h[v] += 1; h }
 
-    @maximum = "Replace this string with your answer."
 
-    @range = "Replace this string with your answer."
 
-    @median = "Replace this string with your answer."
+    @sorted_numbers = @numbers.sort
 
-    @sum = "Replace this string with your answer."
+    @count = @numbers.count
 
-    @mean = "Replace this string with your answer."
+    @minimum = @numbers.min
 
-    @variance = "Replace this string with your answer."
+    @maximum = @numbers.max
 
-    @standard_deviation = "Replace this string with your answer."
+    @range = @numbers.max - @numbers.min
 
-    @mode = "Replace this string with your answer."
+    @median = med
+
+    @sum = @numbers.sum
+
+    @mean = ave
+
+    @variance = var_math.sum
+
+    @standard_deviation = Math.sqrt(var_math.sum)
+
+    @mode = arr.max_by {|v| freq[v]}
 
     # ================================================================================
     # Your code goes above.
